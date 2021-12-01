@@ -34,6 +34,15 @@ namespace API
 
             // add automapper
             services.AddAutoMapper(typeof(MappingProfiles));
+
+            // add cors
+            services.AddCors(op => {
+                op.AddPolicy("CorsPolicy", policy => {
+                    policy.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithOrigins("https://localhost:4200");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +61,9 @@ namespace API
 
             // use static files
             app.UseStaticFiles();
+
+            // use cors
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
