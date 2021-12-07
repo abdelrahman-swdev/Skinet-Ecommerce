@@ -13,6 +13,9 @@ namespace API.Extensions
         {
             // add Product Repository service to container
             services.AddScoped<IProductRepository, ProductRepository>();
+            
+            // add basket repository
+            services.AddScoped<IBasketRepository, BasketRepository>();
 
             // add Generic Repository service to container
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
