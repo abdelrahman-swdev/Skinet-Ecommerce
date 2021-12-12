@@ -2,6 +2,7 @@ using API.Extensions;
 using API.Helpers;
 using API.Middleware;
 using Infrastructure.Data;
+using Infrastructure.identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +24,20 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
             services.AddDbContext<StoreContext>(options => {
                 options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddDbContext<AppIdentityDbContext>(op => {
+                op.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+            });
+
             // add application services
             services.AddApplicationServices();
+
+            // add identity services
+            services.AddIdentityServices(_config);
             
             // add swagger
             services.AddSwaggerDocumentation();
@@ -73,6 +82,7 @@ namespace API
             // use cors
             app.UseCors("CorsPolicy");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             // user swagger middleware

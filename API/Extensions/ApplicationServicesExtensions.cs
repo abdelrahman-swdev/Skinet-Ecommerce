@@ -2,6 +2,7 @@ using System.Linq;
 using API.Errors;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,9 @@ namespace API.Extensions
 
             // add Generic Repository service to container
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            // add token service to container
+            services.AddScoped<ITokenService, TokenService>();
 
             // override the api controller atribute behavior
             services.Configure<ApiBehaviorOptions>(op => 
