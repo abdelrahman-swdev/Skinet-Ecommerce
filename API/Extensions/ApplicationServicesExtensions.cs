@@ -24,6 +24,12 @@ namespace API.Extensions
             // add token service to container
             services.AddScoped<ITokenService, TokenService>();
 
+            // add order service to container
+            services.AddScoped<IOrderService, OrderService>();
+
+            // add unit of work service to container with the same lifetime of repositories
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             // override the api controller atribute behavior
             services.Configure<ApiBehaviorOptions>(op => 
             {
