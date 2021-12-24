@@ -9,6 +9,7 @@ import {
   IBasketItem,
   IBasketTotals,
 } from '../shared/models/basket';
+import { IDeliveryMethod } from '../shared/models/deliveryMethod';
 import { IProduct } from '../shared/models/product';
 
 @Injectable({
@@ -20,8 +21,15 @@ export class BasketService {
   basket$ = this.basketSource.asObservable();
   private basketTotalsSource = new BehaviorSubject<IBasketTotals>(null);
   basketTotals$ = this.basketTotalsSource.asObservable();
+  shipping = 0;
 
   constructor(private http: HttpClient) {}
+
+  setShippingPrice(dm:IDeliveryMethod)
+  {
+    this.shipping = dm.price;
+    this.calculateTotals();
+  }
 
   // get basket by id from api
   getBasket(id: string) {
@@ -119,7 +127,7 @@ export class BasketService {
     }
   }
 
-  // delete Basket
+  // delete Basket from api
   deleteBasket(basket: IBasket) {
     this.http.delete(this.baseUrl + 'basket?id=' + basket.id).subscribe(() => {
       this.basketSource.next(null);
@@ -128,6 +136,13 @@ export class BasketService {
     }, error => {
       console.log(error);
     })
+  }
+
+  deleteBasketFromClient()
+  {
+    this.basketSource.next(null);
+    this.basketTotalsSource.next(null);
+    localStorage.removeItem('basket_id');
   }
 
   // to check if the item is already exist we increase the quantity only
@@ -156,8 +171,8 @@ export class BasketService {
   // calculate total price of current basket
   private calculateTotals() {
     const basket = this.getCurrentBasketValue();
-    const shipping = 0;
     const subtotal = basket.items.reduce((prev, current) => (current.price * current.quantity) + prev, 0);
+    const shipping = this.shipping;
     const total = subtotal + shipping;
     this.basketTotalsSource.next({shipping, subtotal, total});
   }

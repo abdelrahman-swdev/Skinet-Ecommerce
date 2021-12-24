@@ -20,7 +20,6 @@ export class AppComponent implements OnInit {
   {
     const token = localStorage.getItem('token');
     this.accService.loadCurrentUser(token).subscribe(() => {
-      console.log('user loaded');
     }, error => {
       console.log(error);
     });
