@@ -27,6 +27,9 @@ namespace API.Extensions
             // add order service to container
             services.AddScoped<IOrderService, OrderService>();
 
+            // add payment service to container
+            services.AddScoped<IPaymentService, PaymentService>();
+
             // add unit of work service to container with the same lifetime of repositories
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
