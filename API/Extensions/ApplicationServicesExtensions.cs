@@ -30,6 +30,9 @@ namespace API.Extensions
             // add payment service to container
             services.AddScoped<IPaymentService, PaymentService>();
 
+            // add caching service to container
+            services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+
             // add unit of work service to container with the same lifetime of repositories
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
