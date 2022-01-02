@@ -2,6 +2,7 @@
   *ngIf="totalCount > 0"
   [boundaryLinks]="true"
   [totalItems]="totalCount"
+  [ngModel]="pageNumber"
   (pageChanged)="onPagerChanged($event)"
   [itemsPerPage]="pageSize"
   previousText="&lsaquo;"
