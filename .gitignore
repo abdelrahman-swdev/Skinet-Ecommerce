@@ -1,4 +1,6 @@
 obj
 bin
 API/appsettings.json
+publish
 *.db
+API/wwwroot

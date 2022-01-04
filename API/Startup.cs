@@ -1,3 +1,4 @@
+using System.IO;
 using API.Extensions;
 using API.Helpers;
 using API.Middleware;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using StackExchange.Redis;
 
 namespace API
@@ -26,11 +28,11 @@ namespace API
             services.AddControllers();
 
             services.AddDbContext<StoreContext>(options => {
-                options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(_config.GetConnectionString("DefaultConnection"));
             });
 
             services.AddDbContext<AppIdentityDbContext>(op => {
-                op.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+                op.UseNpgsql(_config.GetConnectionString("IdentityConnection"));
             });
 
             // add application services
@@ -78,6 +80,13 @@ namespace API
 
             // use static files
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Content")
+                ),
+                RequestPath = "/content"
+            });
 
             // use cors
             app.UseCors("CorsPolicy");
@@ -91,6 +100,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }
